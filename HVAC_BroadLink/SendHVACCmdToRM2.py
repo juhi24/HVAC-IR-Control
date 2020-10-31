@@ -28,8 +28,8 @@ Demo Mitsubishi HVAC
 import broadlink
 import time
 from datetime import datetime
-import sys
 import binascii
+import codec
 import argparse
 import math
 
@@ -215,17 +215,20 @@ class HVAC_CMD:
 		# Voila, the full BroadLink Command is complete
 		self.__StrHexCode = StrHexCodeBR
 
-		
-	def print_cmd(self):
+    def print_cmd(self):
 		# Display to terminal the Built Command to be sent to the Broadlink IR Emitter
 		self.__build_cmd()			# Request to build the Cmd
 		print(self.__StrHexCode)	# Display the Command
 
-	def return_broadlink_cmd(self):
+    def return_broadlink_cmd(self):
 		myhex = self.__StrHexCode
 		myhex = myhex.replace(' ', '').replace('\n', '')
 		myhex = myhex.encode('ascii', 'strict')
 		return binascii.unhexlify(myhex)
+    
+    def broadlink_cmd_b64(self):
+        cmd_hex = self.return_broadlink_cmd()
+        return codecs.encode(codecs.decode(cmd_hex, 'hex'), 'base64').decode()
 	
 	def send_cmd(self, to_host, to_mac, to_devtype="RM2"):
 		self.__build_cmd()
@@ -322,4 +325,4 @@ MyHVAC_cmd.Temp	= results.HVAC_TEMPERATURE
 # display the Cmd built
 MyHVAC_cmd.print_cmd()
 # Send the Comman to my RM2 device
-MyHVAC_cmd.send_cmd(to_host="192.168.2.96", to_mac="34 ea 34 8a 35 ee")
+#MyHVAC_cmd.send_cmd(to_host="192.168.2.96", to_mac="34 ea 34 8a 35 ee")
