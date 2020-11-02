@@ -32,69 +32,69 @@ import math
 # Definition of an HVAC Cmd Class Object
 class HVAC_CMD:
     class __IR_SPEC:
-        HVAC_MITSUBISHI_HDR_MARK    = 3400
-        HVAC_MITSUBISHI_HDR_SPACE    = 1750
-        HVAC_MITSUBISHI_BIT_MARK     = 450
-        HVAC_MITSUBISHI_ONE_SPACE    = 1300
-        HVAC_MISTUBISHI_ZERO_SPACE    = 420
-        HVAC_MITSUBISHI_RPT_MARK    = 440
-        HVAC_MITSUBISHI_RPT_SPACE    = 17100
+        HVAC_MITSUBISHI_HDR_MARK = 3400
+        HVAC_MITSUBISHI_HDR_SPACE = 1750
+        HVAC_MITSUBISHI_BIT_MARK = 450
+        HVAC_MITSUBISHI_ONE_SPACE = 1300
+        HVAC_MISTUBISHI_ZERO_SPACE = 420
+        HVAC_MITSUBISHI_RPT_MARK = 440
+        HVAC_MITSUBISHI_RPT_SPACE = 17100
     class HVAC_Power:
-        Off         = 0
-        On          = 0x20
+        Off = 0
+        On = 0x20
     class HVAC_Mode:
-        Auto         = 0b00100000
-        Cold         = 0b00011000
-        Dry         = 0b00010000
-        Hot         = 0b00001000
+        Auto = 0b00100000
+        Cold = 0b00011000
+        Dry = 0b00010000
+        Hot = 0b00001000
     class HVAC_Isee:
-        On            = 0b01000000
-        Off            = 0
+        On = 0b01000000
+        Off = 0
     class HVAC_Fan:
-        Auto         = 0
-        Speed_1     = 1
-        Speed_2     = 2
-        Speed_3     = 3
-        Speed_4     = 4
-        Speed_5     = 5
-        Silent         = 0b00000101
+        Auto = 0
+        Speed_1 = 1
+        Speed_2 = 2
+        Speed_3 = 3
+        Speed_4 = 4
+        Speed_5 = 5
+        Silent = 0b00000101
     class HVAC_Vanne:
-        Auto         = 0b01000000
-        H1             = 0b01001000
-        H2             = 0b01010000
-        H3             = 0b01011000
-        H4             = 0b01100000
-        H5            = 0b01101000
-        Swing         = 0b01111000
+        Auto = 0b01000000
+        H1 = 0b01001000
+        H2 = 0b01010000
+        H3 = 0b01011000
+        H4 = 0b01100000
+        H5 = 0b01101000
+        Swing = 0b01111000
     class HVAC_Wide:
-        Left_end    = 0b00010000
-        Left        = 0b00100000
-        Middle        = 0b00110000
-        Right        = 0b01000000
-        Right_end    = 0b01010000
-        Swing        = 0b10000000
+        Left_end = 0b00010000
+        Left = 0b00100000
+        Middle = 0b00110000
+        Right = 0b01000000
+        Right_end = 0b01010000
+        Swing = 0b10000000
     class HVAC_Area:
-        Swing        = 0b00000000
-        Left        = 0b01000000
-        Right        = 0b10000000
-        Auto        = 0b11000000
+        Swing = 0b00000000
+        Left = 0b01000000
+        Right = 0b10000000
+        Auto = 0b11000000
     class HVAC_Clean:
-        On            = 0b00000100
-        Off            = 0b00000000
+        On = 0b00000100
+        Off = 0b00000000
     class HVAC_Plasma:
-        On            = 0b00000100
-        Off            = 0b00000000
+        On = 0b00000100
+        Off = 0b00000000
     class TimeCtrl:
-        OnStart        = 0b00000101
-        OnEnd        = 0b00000011
-        OnStartEnd    = 0b00000111
-        Off            = 0b00000000
+        OnStart = 0b00000101
+        OnEnd = 0b00000011
+        OnStartEnd = 0b00000111
+        Off = 0b00000000
         
 
     # BROADLINK_DURATION_CONVERSION_FACTOR (Brodlink do not use exact duration in µs but a factor of BDCF)
     __BDCF = 269/8192 
     # The Famous Data Sequence I'm starting to know too much...
-    __data     = [0x23, 0xCB, 0x26, 0x01, 0x00, 0x20,    0x08, 0x06, 0x30, 0x45, 0x67, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x1F]
+    __data = [0x23, 0xCB, 0x26, 0x01, 0x00, 0x20,    0x08, 0x06, 0x30, 0x45, 0x67, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x1F]
     # BraodLink Sepecifc Headr for IR command start with a specific code
     __IR_BroadLink_Code = 0x26
 
@@ -103,27 +103,27 @@ class HVAC_CMD:
 
     # Default Values for the Command
     Temp = 21
-    Power         = HVAC_Power
-    Mode         = HVAC_Mode
-    Fan            = HVAC_Fan
-    Isee        = HVAC_Isee
-    Area         = HVAC_Area
-    Clean        = HVAC_Clean
-    Plasma        = HVAC_Plasma
+    Power = HVAC_Power
+    Mode = HVAC_Mode
+    Fan = HVAC_Fan
+    Isee = HVAC_Isee
+    Area = HVAC_Area
+    Clean = HVAC_Clean
+    Plasma = HVAC_Plasma
 
     def __init__(self):
-        self.Power         = self.HVAC_Power.Off
-        self.Mode         = self.HVAC_Mode.Auto
-        self.Fan         = self.HVAC_Fan.Auto
-        self.Isee        = self.HVAC_Isee.Off
-        self.Vanne        = self.HVAC_Vanne.Auto
-        self.Wide        = self.HVAC_Wide.Swing
-        self.Area        = self.HVAC_Area.Auto
-        self.Clean         = self.HVAC_Clean.Off
-        self.Plasma     = self.HVAC_Plasma.Off
-        self.EndTime     = None
-        self.StartTime  = None
-        self._log        = False
+        self.Power = self.HVAC_Power.Off
+        self.Mode = self.HVAC_Mode.Auto
+        self.Fan = self.HVAC_Fan.Auto
+        self.Isee = self.HVAC_Isee.Off
+        self.Vanne = self.HVAC_Vanne.Auto
+        self.Wide = self.HVAC_Wide.Swing
+        self.Area = self.HVAC_Area.Auto
+        self.Clean = self.HVAC_Clean.Off
+        self.Plasma = self.HVAC_Plasma.Off
+        self.EndTime = None
+        self.StartTime = None
+        self._log = False
     
     def __val2BrCode(self, valeur, noZero=False):
     #    val2BrCode: Transform a number to a broadlink Hex string 
@@ -144,17 +144,17 @@ class HVAC_CMD:
     #    Build_Cmd: Build the Command applying all parameters defined. The cmd is stored in memory, not send. 
         now = datetime.today()
         
-        self.__data[5]     = self.Power
-        self.__data[6]     = self.Mode | self.Isee
-        self.__data[7]     = max(16, min(31, self.Temp)) - 16
-        self.__data[8]     = self.Mode | self.Wide
-        self.__data[9]    = self.Fan | self.Vanne
-        self.__data[9]    = (now.hour*6) + (now.minute//10)
+        self.__data[5] = self.Power
+        self.__data[6] = self.Mode | self.Isee
+        self.__data[7] = max(16, min(31, self.Temp)) - 16
+        self.__data[8] = self.Mode | self.Wide
+        self.__data[9] = self.Fan | self.Vanne
+        self.__data[9] = (now.hour*6) + (now.minute//10)
         self.__data[10] = 0 if self.EndTime is None else ((self.EndTime.hour*6) + (self.EndTime.minute//10))
         self.__data[11] = 0 if self.StartTime is None else ((self.StartTime.hour*6) + (self.StartTime.minute//10))
         self.__data[12] = 0 # Time Control not used in this version
-        self.__data[14]    = self.Clean
-        self.__data[15]    = self.Plasma
+        self.__data[14] = self.Clean
+        self.__data[15] = self.Plasma
         self.__data[17] = sum(self.__data[:-1]) % (0xFF + 1)
     
         StrHexCode = ""
@@ -263,7 +263,7 @@ def main():
     parser.add_argument('--version', action='version', version='%(prog)s 1.0')
     results = parser.parse_args()
             
-    MyHVAC_cmd         = HVAC_CMD()    # create an HVAC Command Object
+    MyHVAC_cmd = HVAC_CMD()    # create an HVAC Command Object
     
     # Parse the Arg Parameters, if any
     # Parse Power On/Off
@@ -274,42 +274,42 @@ def main():
     
     # Parse HVAC Clim Mode    
     if (results.HVAC_CLIMATE_CODE[0:1] == 'C'):
-        MyHVAC_cmd.Mode    = MyHVAC_cmd.HVAC_Mode.Cold
+        MyHVAC_cmd.Mode = MyHVAC_cmd.HVAC_Mode.Cold
     elif (results.HVAC_CLIMATE_CODE[0:1] == 'H'):
-        MyHVAC_cmd.Mode    = MyHVAC_cmd.HVAC_Mode.Hot
+        MyHVAC_cmd.Mode = MyHVAC_cmd.HVAC_Mode.Hot
     elif (results.HVAC_CLIMATE_CODE[0:1] == 'D'):
-        MyHVAC_cmd.Mode    = MyHVAC_cmd.HVAC_Mode.Dry
+        MyHVAC_cmd.Mode = MyHVAC_cmd.HVAC_Mode.Dry
     else:
-        MyHVAC_cmd.Mode    = MyHVAC_cmd.HVAC_Mode.Auto
+        MyHVAC_cmd.Mode = MyHVAC_cmd.HVAC_Mode.Auto
     
     # Parse HVAC Fan Mode
     if (results.HVAC_FAN_MODE[0:1] == 'S'):
-        MyHVAC_cmd.Fan    = MyHVAC_cmd.HVAC_Fan.Silent
+        MyHVAC_cmd.Fan = MyHVAC_cmd.HVAC_Fan.Silent
     elif (results.HVAC_FAN_MODE[0:1] == '1'):
-        MyHVAC_cmd.Fan    = MyHVAC_cmd.HVAC_Fan.Speed1
+        MyHVAC_cmd.Fan = MyHVAC_cmd.HVAC_Fan.Speed1
     elif (results.HVAC_FAN_MODE[0:1] == '2'):
-        MyHVAC_cmd.Fan    = MyHVAC_cmd.HVAC_Fan.Speed2
+        MyHVAC_cmd.Fan = MyHVAC_cmd.HVAC_Fan.Speed2
     elif (results.HVAC_FAN_MODE[0:1] == '3'):
-        MyHVAC_cmd.Fan    = MyHVAC_cmd.HVAC_Fan.Speed3
+        MyHVAC_cmd.Fan = MyHVAC_cmd.HVAC_Fan.Speed3
     elif (results.HVAC_FAN_MODE[0:1] == '4'):
-        MyHVAC_cmd.Fan    = MyHVAC_cmd.HVAC_Fan.Speed4
+        MyHVAC_cmd.Fan = MyHVAC_cmd.HVAC_Fan.Speed4
     elif (results.HVAC_FAN_MODE[0:1] == '5'):
-        MyHVAC_cmd.Fan    = MyHVAC_cmd.HVAC_Fan.Speed5
+        MyHVAC_cmd.Fan = MyHVAC_cmd.HVAC_Fan.Speed5
     else:
-        MyHVAC_cmd.Fan    = MyHVAC_cmd.HVAC_Fan.Auto
+        MyHVAC_cmd.Fan = MyHVAC_cmd.HVAC_Fan.Auto
     
     # Parse HVAC_Vanne    Mode / HVAC_VANNE_V_CODE
     if (results.HVAC_FAN_MODE[0:1] == 'S'):
-        MyHVAC_cmd.Vanne    = MyHVAC_cmd.HVAC_Vanne.Swing
+        MyHVAC_cmd.Vanne = MyHVAC_cmd.HVAC_Vanne.Swing
     elif (results.HVAC_FAN_MODE[0:2] == 'B'):
-        MyHVAC_cmd.Vanne    = MyHVAC_cmd.HVAC_Vanne.H5
+        MyHVAC_cmd.Vanne = MyHVAC_cmd.HVAC_Vanne.H5
     elif (results.HVAC_FAN_MODE[0:1] == 'T'):
-        MyHVAC_cmd.Vanne    = MyHVAC_cmd.HVAC_Vanne.H1
+        MyHVAC_cmd.Vanne = MyHVAC_cmd.HVAC_Vanne.H1
     else:
-        MyHVAC_cmd.Vanne    = MyHVAC_cmd.HVAC_Vanne.Auto
+        MyHVAC_cmd.Vanne = MyHVAC_cmd.HVAC_Vanne.Auto
     
     # Parse Temperature
-    MyHVAC_cmd.Temp    = results.HVAC_TEMPERATURE
+    MyHVAC_cmd.Temp = results.HVAC_TEMPERATURE
     
     # display the Cmd built
     print(MyHVAC_cmd.broadlink_cmd_b64())
