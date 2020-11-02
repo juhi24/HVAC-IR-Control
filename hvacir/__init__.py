@@ -1,3 +1,4 @@
+# coding: utf-8
 """     
     FUN With Broadlink IR Mini 
     https://github.com/r45635/HVAC-IR-Control
@@ -13,9 +14,9 @@
         I'ts a template/code example, no ther pretention
         
         Prerequisit:
-        Python 3.6.3 (I've tested on that version) Tested both on Linux and Windows.
+        Python 3
         Broadlink python libraries
-        An RM Pro Mini from BroadLink 'RM2"
+        A Broadlink IR blaster
         You need to know IP and Mac of your BroadLink device
         
         An HVAC Mitsubishi, can be almost easily ported to another HVAC brand should you know already the trame 
@@ -26,7 +27,6 @@ import time
 from datetime import datetime
 import binascii
 import codecs
-import argparse
 import math
 
 # Definition of an HVAC Cmd Class Object
@@ -91,10 +91,12 @@ class HVAC_CMD:
         Off = 0b00000000
         
 
-    # BROADLINK_DURATION_CONVERSION_FACTOR (Brodlink do not use exact duration in µs but a factor of BDCF)
+    # BROADLINK_DURATION_CONVERSION_FACTOR 
+    # Brodlink do not use exact duration in µs but a factor of BDCF
     __BDCF = 269/8192 
     # The Famous Data Sequence I'm starting to know too much...
-    __data = [0x23, 0xCB, 0x26, 0x01, 0x00, 0x20,    0x08, 0x06, 0x30, 0x45, 0x67, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x1F]
+    __data = [0x23, 0xCB, 0x26, 0x01, 0x00, 0x20, 0x08, 0x06, 0x30,
+              0x45, 0x67, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x1F]
     # BraodLink Sepecifc Headr for IR command start with a specific code
     __IR_BroadLink_Code = 0x26
 
@@ -141,7 +143,8 @@ class HVAC_CMD:
         return myStr
     
     def __build_cmd(self):
-    #    Build_Cmd: Build the Command applying all parameters defined. The cmd is stored in memory, not send. 
+        # Build_Cmd: Build the Command applying all parameters defined. 
+        # The cmd is stored in memory, not send. 
         now = datetime.today()
         
         self.__data[5] = self.Power
@@ -216,7 +219,7 @@ class HVAC_CMD:
         self.__build_cmd()            # Request to build the Cmd
         print(self.__StrHexCode)    # Display the Command
 
-    def return_broadlink_cmd(self):
+    def broadlink_cmd_hex(self):
         myhex = self.__StrHexCode
         myhex = myhex.replace(' ', '').replace('\n', '')
         myhex = myhex.encode('ascii', 'strict')
@@ -227,7 +230,7 @@ class HVAC_CMD:
         cmd_hex = self.__StrHexCode
         return codecs.encode(codecs.decode(cmd_hex, 'hex'), 'base64').decode().replace(' ', '').replace('\n', '')
     
-    def send_cmd(self, to_host, to_mac, to_devtype="RM2"):
+    def broadlink_send_cmd(self, to_host, to_mac, to_devtype="RM2"):
         self.__build_cmd()
         #device = broadlink.rm(host=("192.168.2.96",80), mac=bytearray.fromhex("34 ea 34 8a 35 ee"),devtype="RM2")
         device = broadlink.rm(host=(to_host,80), mac=bytearray.fromhex(to_mac),devtype=to_devtype)
@@ -245,76 +248,3 @@ class HVAC_CMD:
         device.send_data(binascii.unhexlify(myhex))
         if (self._log):
             print("Code Sent....")
-
-
-def main():
-    parser = argparse.ArgumentParser(description='Short sample python HVAC_IR command sender to Broadlink RM2 Mini ')
-    parser.add_argument('-t', '--temperature', action='store', dest='HVAC_TEMPERATURE', default=21, type=int,
-                        help='Set HVAC Temperature in Celcius, Ex: 21')
-    parser.add_argument('-p','--power', action='store_true', default=False,
-                        dest='HVAC_POWER',
-                        help='HVAC Power, default = Power Off')
-    parser.add_argument('-c', '--climate', action='store', dest='HVAC_CLIMATE_CODE', default='C',
-                        help='Define Climate Code : C=Cold*, H=HOT')
-    parser.add_argument('-Vv', '--vanne_vertical', action='store', dest='HVAC_VANNE_V_CODE', default='A',
-                        help='Define Vertical Vanne Mode : A=Automatic*, S=Swing, B=Bottom, T:Top')                
-    parser.add_argument('-F', '--fan', action='store', dest='HVAC_FAN_MODE', default='A',
-                        help='Define Fan speed : A=Automatic*, L=Low, M=Middle, F=Fast, S=Silent')                
-    parser.add_argument('--version', action='version', version='%(prog)s 1.0')
-    results = parser.parse_args()
-            
-    MyHVAC_cmd = HVAC_CMD()    # create an HVAC Command Object
-    
-    # Parse the Arg Parameters, if any
-    # Parse Power On/Off
-    if (results.HVAC_POWER):
-        MyHVAC_cmd.Power = MyHVAC_cmd.HVAC_Power.On
-    else:
-        MyHVAC_cmd.Power = MyHVAC_cmd.HVAC_Power.Off
-    
-    # Parse HVAC Clim Mode    
-    if (results.HVAC_CLIMATE_CODE[0:1] == 'C'):
-        MyHVAC_cmd.Mode = MyHVAC_cmd.HVAC_Mode.Cold
-    elif (results.HVAC_CLIMATE_CODE[0:1] == 'H'):
-        MyHVAC_cmd.Mode = MyHVAC_cmd.HVAC_Mode.Hot
-    elif (results.HVAC_CLIMATE_CODE[0:1] == 'D'):
-        MyHVAC_cmd.Mode = MyHVAC_cmd.HVAC_Mode.Dry
-    else:
-        MyHVAC_cmd.Mode = MyHVAC_cmd.HVAC_Mode.Auto
-    
-    # Parse HVAC Fan Mode
-    if (results.HVAC_FAN_MODE[0:1] == 'S'):
-        MyHVAC_cmd.Fan = MyHVAC_cmd.HVAC_Fan.Silent
-    elif (results.HVAC_FAN_MODE[0:1] == '1'):
-        MyHVAC_cmd.Fan = MyHVAC_cmd.HVAC_Fan.Speed1
-    elif (results.HVAC_FAN_MODE[0:1] == '2'):
-        MyHVAC_cmd.Fan = MyHVAC_cmd.HVAC_Fan.Speed2
-    elif (results.HVAC_FAN_MODE[0:1] == '3'):
-        MyHVAC_cmd.Fan = MyHVAC_cmd.HVAC_Fan.Speed3
-    elif (results.HVAC_FAN_MODE[0:1] == '4'):
-        MyHVAC_cmd.Fan = MyHVAC_cmd.HVAC_Fan.Speed4
-    elif (results.HVAC_FAN_MODE[0:1] == '5'):
-        MyHVAC_cmd.Fan = MyHVAC_cmd.HVAC_Fan.Speed5
-    else:
-        MyHVAC_cmd.Fan = MyHVAC_cmd.HVAC_Fan.Auto
-    
-    # Parse HVAC_Vanne    Mode / HVAC_VANNE_V_CODE
-    if (results.HVAC_FAN_MODE[0:1] == 'S'):
-        MyHVAC_cmd.Vanne = MyHVAC_cmd.HVAC_Vanne.Swing
-    elif (results.HVAC_FAN_MODE[0:2] == 'B'):
-        MyHVAC_cmd.Vanne = MyHVAC_cmd.HVAC_Vanne.H5
-    elif (results.HVAC_FAN_MODE[0:1] == 'T'):
-        MyHVAC_cmd.Vanne = MyHVAC_cmd.HVAC_Vanne.H1
-    else:
-        MyHVAC_cmd.Vanne = MyHVAC_cmd.HVAC_Vanne.Auto
-    
-    # Parse Temperature
-    MyHVAC_cmd.Temp = results.HVAC_TEMPERATURE
-    
-    # display the Cmd built
-    print(MyHVAC_cmd.broadlink_cmd_b64())
-    #MyHVAC_cmd.send_cmd(to_host="192.168.2.96", to_mac="34 ea 34 8a 35 ee")
-
-
-if __name__ == '__main__':
-    main()
