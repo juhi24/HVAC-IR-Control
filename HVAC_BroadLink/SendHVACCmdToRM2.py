@@ -227,8 +227,9 @@ class HVAC_CMD:
         return binascii.unhexlify(myhex)
     
     def broadlink_cmd_b64(self):
-        cmd_hex = self.return_broadlink_cmd()
-        return codecs.encode(codecs.decode(cmd_hex, 'hex'), 'base64').decode()
+        self.__build_cmd()
+        cmd_hex = self.__StrHexCode
+        return codecs.encode(codecs.decode(cmd_hex, 'hex'), 'base64').decode().replace(' ', '').replace('\n', '')
     
     def send_cmd(self, to_host, to_mac, to_devtype="RM2"):
         self.__build_cmd()
@@ -323,6 +324,6 @@ else:
 MyHVAC_cmd.Temp    = results.HVAC_TEMPERATURE
 
 # display the Cmd built
-MyHVAC_cmd.print_cmd()
+print(MyHVAC_cmd.broadlink_cmd_b64())
 # Send the Comman to my RM2 device
 #MyHVAC_cmd.send_cmd(to_host="192.168.2.96", to_mac="34 ea 34 8a 35 ee")
