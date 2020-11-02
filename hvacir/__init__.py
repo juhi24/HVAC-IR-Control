@@ -89,7 +89,6 @@ class HVAC_CMD:
         OnEnd = 0b00000011
         OnStartEnd = 0b00000111
         Off = 0b00000000
-        
 
     # BROADLINK_DURATION_CONVERSION_FACTOR 
     # Brodlink do not use exact duration in µs but a factor of BDCF
@@ -103,16 +102,6 @@ class HVAC_CMD:
     _log    = True
     __StrHexCode = ""
 
-    # Default Values for the Command
-    Temp = 21
-    Power = HVAC_Power
-    Mode = HVAC_Mode
-    Fan = HVAC_Fan
-    Isee = HVAC_Isee
-    Area = HVAC_Area
-    Clean = HVAC_Clean
-    Plasma = HVAC_Plasma
-
     def __init__(self):
         self.Power = self.HVAC_Power.Off
         self.Mode = self.HVAC_Mode.Auto
@@ -123,6 +112,7 @@ class HVAC_CMD:
         self.Area = self.HVAC_Area.Auto
         self.Clean = self.HVAC_Clean.Off
         self.Plasma = self.HVAC_Plasma.Off
+        self.Temp = 21
         self.EndTime = None
         self.StartTime = None
         self._log = False
