@@ -29,6 +29,8 @@ import binascii
 import codecs
 import math
 
+__version__ = '0.0.2'
+
 # Definition of an HVAC Cmd Class Object
 class HVAC_CMD:
     class __IR_SPEC:
