@@ -29,7 +29,72 @@ import binascii
 import codecs
 import math
 
-__version__ = '0.0.2'
+
+__version__ = '0.0.3'
+
+
+class HVAC_Power:
+    Off = 0
+    On = 0x20
+
+
+class HVAC_Mode:
+    Auto = 0b00100000
+    Cold = 0b00011000
+    Dry = 0b00010000
+    Hot = 0b00001000
+
+
+class HVAC_Isee:
+    On = 0b01000000
+    Off = 0
+
+
+class HVAC_Fan:
+    Auto = 0
+    Speed_1 = 1
+    Speed_2 = 2
+    Speed_3 = 3
+    Speed_4 = 4
+    Speed_5 = 5
+    Silent = 0b00000101
+
+
+class HVAC_Vanne:
+    Auto = 0b01000000
+    H1 = 0b01001000
+    H2 = 0b01010000
+    H3 = 0b01011000
+    H4 = 0b01100000
+    H5 = 0b01101000
+    Swing = 0b01111000
+
+
+class HVAC_Wide:
+    Left_end = 0b00010000
+    Left = 0b00100000
+    Middle = 0b00110000
+    Right = 0b01000000
+    Right_end = 0b01010000
+    Swing = 0b10000000
+
+
+class HVAC_Area:
+    Swing = 0b00000000
+    Left = 0b01000000
+    Right = 0b10000000
+    Auto = 0b11000000
+
+
+class HVAC_Clean:
+    On = 0b00000100
+    Off = 0b00000000
+
+
+class HVAC_Plasma:
+    On = 0b00000100
+    Off = 0b00000000
+
 
 # Definition of an HVAC Cmd Class Object
 class HVAC_CMD:
@@ -41,51 +106,6 @@ class HVAC_CMD:
         HVAC_MISTUBISHI_ZERO_SPACE = 420
         HVAC_MITSUBISHI_RPT_MARK = 440
         HVAC_MITSUBISHI_RPT_SPACE = 17100
-    class HVAC_Power:
-        Off = 0
-        On = 0x20
-    class HVAC_Mode:
-        Auto = 0b00100000
-        Cold = 0b00011000
-        Dry = 0b00010000
-        Hot = 0b00001000
-    class HVAC_Isee:
-        On = 0b01000000
-        Off = 0
-    class HVAC_Fan:
-        Auto = 0
-        Speed_1 = 1
-        Speed_2 = 2
-        Speed_3 = 3
-        Speed_4 = 4
-        Speed_5 = 5
-        Silent = 0b00000101
-    class HVAC_Vanne:
-        Auto = 0b01000000
-        H1 = 0b01001000
-        H2 = 0b01010000
-        H3 = 0b01011000
-        H4 = 0b01100000
-        H5 = 0b01101000
-        Swing = 0b01111000
-    class HVAC_Wide:
-        Left_end = 0b00010000
-        Left = 0b00100000
-        Middle = 0b00110000
-        Right = 0b01000000
-        Right_end = 0b01010000
-        Swing = 0b10000000
-    class HVAC_Area:
-        Swing = 0b00000000
-        Left = 0b01000000
-        Right = 0b10000000
-        Auto = 0b11000000
-    class HVAC_Clean:
-        On = 0b00000100
-        Off = 0b00000000
-    class HVAC_Plasma:
-        On = 0b00000100
-        Off = 0b00000000
     class TimeCtrl:
         OnStart = 0b00000101
         OnEnd = 0b00000011
@@ -104,17 +124,20 @@ class HVAC_CMD:
     _log    = True
     __StrHexCode = ""
 
-    def __init__(self):
-        self.Power = self.HVAC_Power.Off
-        self.Mode = self.HVAC_Mode.Auto
-        self.Fan = self.HVAC_Fan.Auto
-        self.Isee = self.HVAC_Isee.Off
-        self.Vanne = self.HVAC_Vanne.Auto
-        self.Wide = self.HVAC_Wide.Swing
-        self.Area = self.HVAC_Area.Auto
-        self.Clean = self.HVAC_Clean.Off
-        self.Plasma = self.HVAC_Plasma.Off
-        self.Temp = 21
+    def __init__(self, power=HVAC_Power.Off, mode=HVAC_Mode.Auto,
+                 fan=HVAC_Fan.Auto, isee=HVAC_Isee.Off, vanne=HVAC_Vanne.Auto,
+                 wide=HVAC_Wide.Swing, area=HVAC_Area.Auto, 
+                 clean=HVAC_Clean.Off, plasma=HVAC_Plasma.Off, temp=21):
+        self.Power = power
+        self.Mode = mode
+        self.Fan = fan
+        self.Isee = isee
+        self.Vanne = vanne
+        self.Wide = wide
+        self.Area = area
+        self.Clean = clean
+        self.Plasma = plasma
+        self.Temp = temp
         self.EndTime = None
         self.StartTime = None
         self._log = False
